@@ -15,6 +15,9 @@ Gtk:ERROR:../../../../gtk/gtkiconhelper.c:494:ensure_surface_for_gicon: assertio
 
 I suspect this is a compatibility issue between the Qt6 Gui module and the GTK library in Ubuntu 22.04.
 
+Before proceeding to use this library you should check if [Qt's own implementation](https://github.com/qt/qtbase/tree/dev/src/plugins/platformthemes/xdgdesktopportal) works for you. It is activated using the environment variable `QT_QPA_PLATFORMTHEME=xdgdesktopportal`.
+
+
 To use the library add it as a submodule in your project and include in your CMake build:
 
 - `add_subdirectory(xdg-file-dialog)`
