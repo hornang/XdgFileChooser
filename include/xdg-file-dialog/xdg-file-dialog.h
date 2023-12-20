@@ -7,7 +7,9 @@
 #include "OrgFreedesktopPortalFileChooser.h"
 #include "OrgFreedesktopPortalRequest.h"
 
-class XdgFileDialog : public QObject
+#include "xdg-file-dialog_export.h"
+
+class XDG_FILE_DIALOG_EXPORT XdgFileDialog : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl folder MEMBER m_folder NOTIFY folderChanged)
