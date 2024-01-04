@@ -47,7 +47,7 @@ void XdgFileDialog::parseDbusReply(const QVariantMap &results)
     m_request->deleteLater();
 }
 
-void XdgFileDialog::open()
+bool XdgFileDialog::open()
 {
     QString parentWindowId;
 
@@ -67,10 +67,18 @@ void XdgFileDialog::open()
     QDBusPendingReply<QDBusObjectPath> reply = m_fileChooser.OpenFile(parentWindowId, m_title, options);
     reply.waitForFinished();
 
+    if (reply.isError()) {
+        qWarning() << "QDBusReply was error: " << reply.error();
+        emit errorOccurred();
+        return false;
+    }
+
     if (reply.count() != 1) {
         qWarning() << "Incorrect DBUS reply for OrgFreedesktopPortalFileChooserInterface::Open";
-        return;
+        emit errorOccurred();
+        return false;
     }
+
     QDBusObjectPath objectPath = reply.argumentAt(0).value<QDBusObjectPath>();
 
     m_request = new OrgFreedesktopPortalRequestInterface(serviceName,
@@ -83,6 +91,7 @@ void XdgFileDialog::open()
                      [&](uint response, const QVariantMap &results) {
                          parseDbusReply(results);
                      });
+    return true;
 }
 
 QObject *XdgFileDialog::parentWindow() const
@@ -104,7 +113,9 @@ void XdgFileDialog::setVisible(bool newVisible)
         return;
 
     if (newVisible) {
-        open();
+        if (!open()) {
+            return;
+        }
     } else {
         if (m_request) {
             m_request->Close();

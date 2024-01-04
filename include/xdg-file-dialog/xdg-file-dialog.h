@@ -25,6 +25,7 @@ public:
     void setVisible(bool newVisible);
 
 signals:
+    void errorOccurred();
     void folderChanged();
     void accepted();
     void titleChanged();
@@ -34,7 +35,7 @@ signals:
 private:
     void parseDbusReply(const QVariantMap &results);
     void setFolder(const QUrl &folder);
-    void open();
+    bool open();
 
     QDBusConnection m_dbusConnection = QDBusConnection::sessionBus();
     OrgFreedesktopPortalFileChooserInterface m_fileChooser;
